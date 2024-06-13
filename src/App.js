@@ -40,7 +40,7 @@ function reducer(state, action) {
         return {
             ...state,
             answer: action.payload,
-            points: action.payload === currentQuestion.correctOption ? state.points +1 : currentQuestion.points,
+            points: action.payload === currentQuestion.correctOption ? state.points + currentQuestion.points  : currentQuestion.points,
         }
     case "nextQuestion":
         return {
@@ -54,10 +54,13 @@ function reducer(state, action) {
 
 }
 function App() {
-const [{status, questions, index, answer}, dispatch] = useReducer( reducer, initialState);
+const [{status, questions, index, answer, points}, dispatch] = useReducer( reducer, initialState);
 
 
 const numQuestions = questions.length
+
+const maxPoint = questions.reduce((prev, curr) => prev + curr.points, 0)
+
   useEffect(function () {
     fetch("http://localhost:8000/questions")
     .then((res) => res.json())
@@ -72,7 +75,7 @@ const numQuestions = questions.length
          {status === 'error' && <Error/>}  
          {status === 'ready' && <WelcomeScreen numQuestions = {numQuestions} dispatch = {dispatch}/>}  
          {status === 'active' &&
-         <> <Question  question = {questions[index]} dispatch = {dispatch} answer = {answer}/>
+         <> <Question  question = {questions[index]} dispatch = {dispatch} answer = {answer} numQuestions = {numQuestions} index = {index} points= {points} maxPoint = {maxPoint}/>
          <NextButton dispatch = {dispatch} answer = {answer} />
          </>}  
         
