@@ -6,6 +6,7 @@ import Error from "./Error";
 import WelcomeScreen from './components/WelcomeScreen';
 import Question from './components/Question'
 import NextButton from './components/NextButton'
+import FinishScreen from "./components/FinishScreen";
 
 
 const initialState = {
@@ -48,6 +49,17 @@ function reducer(state, action) {
             index: state.index + 1,
             answer: null,
         }
+    case "finish":
+        return {
+            ...state,
+            status: 'finish'
+        }
+    case "reset":
+        return {
+            ...initialState,
+            questions: state.questions,
+            status: 'ready'
+        }
      default:
         throw new Error('Action unkown')   
  }
@@ -76,8 +88,9 @@ const maxPoint = questions.reduce((prev, curr) => prev + curr.points, 0)
          {status === 'ready' && <WelcomeScreen numQuestions = {numQuestions} dispatch = {dispatch}/>}  
          {status === 'active' &&
          <> <Question  question = {questions[index]} dispatch = {dispatch} answer = {answer} numQuestions = {numQuestions} index = {index} points= {points} maxPoint = {maxPoint}/>
-         <NextButton dispatch = {dispatch} answer = {answer} />
-         </>}  
+         <NextButton dispatch = {dispatch} answer = {answer} numQuestions = {numQuestions} index = {index}/>
+         </>} 
+         { status === 'finish' && <FinishScreen points= {points} maxPoint = {maxPoint} dispatch = {dispatch} />} 
         
       </Main>
     </div>
